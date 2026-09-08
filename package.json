@@ -1,0 +1,26 @@
+{
+  "license": "0BSD",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "expo": "~55.0.31",
+    "expo-status-bar": "~55.0.6",
+    "react": "19.2.0",
+    "react-native": "0.83.10",
+    "lottie-ios": "*",
+    "prop-types": "*",
+    "expo-constants": "~55.0.17",
+    "@expo/vector-icons": "^15.0.2",
+    "react-native-paper": "2.2.8",
+    "lottie-react-native": "~7.3.4",
+    "@lottiefiles/dotlottie-react": "*",
+    "expo-location": "~55.1.14",
+    "react-native-maps": "1.20.1"
+  },
+  "private": true
+}

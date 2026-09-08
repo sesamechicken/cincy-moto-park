@@ -1,0 +1,109 @@
+{
+  "spots": [
+    {
+      "name": "SYCAMORE ST",
+      "description": "Next to the Taft Theatre (left side)",
+      "parkOnSidewalk": true,
+      "latitude": 39.101526,
+      "longitude": -84.507995,
+      "policeBlock": false
+    },
+    {
+      "name": "BROADWAY ST",
+      "description": "Next to P&G parking garage (left side)",
+      "parkOnSidewalk": true,
+      "latitude": 39.103927,
+      "longitude": -84.506916,
+      "policeBlock": false
+    },
+    {
+      "name": "7TH ST",
+      "description": "Next to entrance for paid lot (left side)",
+      "parkOnSidewalk": true,
+      "latitude": 39.104384,
+      "longitude": -84.509333,
+      "policeBlock": false
+    },
+    {
+      "name": "WALNUT ST",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.102465,
+      "longitude": -84.511656,
+      "policeBlock": false
+    },
+    {
+      "name": "3RD ST",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.097965,
+      "longitude": -84.517055,
+      "policeBlock": false
+    },
+    {
+      "name": "ELM ST",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.099760,
+      "longitude": -84.515989,
+      "policeBlock": false
+    },
+    {
+      "name": "PLUM ST & 6TH",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.102472,
+      "longitude": -84.518354,
+      "policeBlock": false
+    },
+    {
+      "name": "CENTRAL AVE",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.103638,
+      "longitude": -84.520202,
+      "policeBlock": false
+    },
+    {
+      "name": "8TH ST",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.104519,
+      "longitude": -84.513255,
+      "policeBlock": false
+    },
+    {
+      "name": "COURT ST",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 0,
+      "longitude": 0,
+      "policeBlock": false,
+      "construction": true
+    },
+    {
+      "name": "REPUBLIC ST",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.108311,
+      "longitude": -84.515615,
+      "policeBlock": false
+    },
+    {
+      "name": "MAIN ST",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.109709, 
+      "longitude": -84.511805,
+      "policeBlock": false
+    },
+    {
+      "name": "RACE ST",
+      "description": "",
+      "parkOnSidewalk": true,
+      "latitude": 39.111109, 
+      "longitude": -84.517133,
+      "policeBlock": false
+    }
+  ]
+}
