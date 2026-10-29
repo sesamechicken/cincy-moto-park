@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "lonely-bacon",
-    "slug": "snack-9ef3574b-ea21-4e43-8a6c-146301de18b4",
+    "name": "Cincy Moto Park",
+    "slug": "cincy-moto-park",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,7 +12,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.cincymotopark"
     },
     "android": {
       "adaptiveIcon": {
@@ -20,10 +21,19 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "package": "com.example.cincymotopark"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Cincy Moto Park uses your location to show motorcycle parking spots near you and how far away they are."
+        }
+      ]
+    ]
   }
 }

@@ -1,89 +1,136 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image, Button } from 'react-native';
-import * as Location from 'expo-location';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import Constants from 'expo-constants';
+import { View, StyleSheet, Pressable } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default class Map extends React.Component {
- state = {
-    mapRegion: null,
-    hasLocationPermissions: false,
-    locationResult: null,
-  };
+import { colors, shadow, MIN_TOUCH } from '../theme';
+import { isSpotUnavailable } from '../utils/distance';
 
-  mapRef = React.createRef();
-
-  componentDidMount() {
-    this._getLocationAsync();
-  }
-  
-_getLocationAsync = async () => {
-  let { status } = await Location.requestForegroundPermissionsAsync();
-  if (status !== 'granted') {
-    this.setState({ locationResult: 'Permission to access location was denied' });
-    return;
-  }
-  this.setState({ hasLocationPermissions: true });
-  let location = await Location.getCurrentPositionAsync({});
-  this.setState({ locationResult: location.coords });
+const CINCINNATI_REGION = {
+  latitude: 39.1028937,
+  longitude: -84.5137708,
+  latitudeDelta: 0.015,
+  longitudeDelta: 0.015,
 };
 
- // Zoom to an arbitrary lat/lng
-  _zoomToLocation = (latitude, longitude, latitudeDelta = 0.01, longitudeDelta = 0.01) => {
-    if (this.mapRef.current) {
+// Named SpotMap (not `Map`) so it doesn't shadow JavaScript's built-in Map.
+// Note: Marker contents change with selection/parked state, so we leave
+// `tracksViewChanges` at its default. Freezing it would stop pins updating.
+export default class SpotMap extends React.Component {
+  mapRef = React.createRef();
+
+  zoomToSpot = (spot, latitudeDelta = 0.006, longitudeDelta = 0.006) => {
+    if (this.mapRef.current && spot) {
       this.mapRef.current.animateToRegion(
-        { latitude, longitude, latitudeDelta, longitudeDelta },
-        1000 // animation duration in ms
+        { latitude: spot.latitude, longitude: spot.longitude, latitudeDelta, longitudeDelta },
+        400
       );
     }
   };
 
-  // Zoom specifically to the user's current location
-  _zoomToUser = () => {
-    const { locationResult } = this.state;
-    if (locationResult) {
-      this._zoomToLocation(locationResult.latitude, locationResult.longitude);
-    }
-  };
-
-  // Zoom to fit all spot markers on screen
-  _zoomToFitSpots = () => {
-    const { spots = [] } = this.props;
-    if (this.mapRef.current && spots.length > 0) {
-      this.mapRef.current.fitToCoordinates(
-        spots.map(spot => ({ latitude: spot.latitude, longitude: spot.longitude })),
-        {
-          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-          animated: true,
-        }
-      );
+  zoomToUser = () => {
+    const { userLocation } = this.props;
+    if (userLocation) {
+      this.zoomToSpot(userLocation, 0.01, 0.01);
     }
   };
 
   render() {
-    const { spots = [] } = this.props;
+    const { spots = [], selectedSpotId, parkedSpotId, onSelectSpot, userLocation } = this.props;
+
     return (
+      <View style={styles.wrapper}>
         <MapView
           ref={this.mapRef}
-          style={{ height: '50%' }}
-          showsUserLocation={true}
-          initialRegion={{
-            latitude: 39.1028937,
-            longitude: -84.5137708,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.015,
-          }}
-          showsIndoors={false}>
-          {spots.map(spot => (
-            <Marker
-              key={spot.id ?? spot.name}
-              coordinate={{ latitude: spot.latitude, longitude: spot.longitude }}
-              title={spot.name}
-              onPress={() => this._zoomToLocation(spot.latitude, spot.longitude)}
-            />
-          ))}
+          showsUserLocation
+          showsMyLocationButton={false} // we draw our own button (works on iOS too)
+          style={styles.map}
+          initialRegion={CINCINNATI_REGION}
+        >
+          {spots.map((spot) => {
+            if (isSpotUnavailable(spot)) return null; // don't plot spots without real coords
+
+            const isParked = spot.id === parkedSpotId;
+            const isSelected = spot.id === selectedSpotId;
+
+            return (
+              <Marker
+                key={spot.id}
+                coordinate={{ latitude: spot.latitude, longitude: spot.longitude }}
+                title={spot.name}
+                onPress={() => onSelectSpot(spot)}
+                anchor={{ x: 0.5, y: 0.5 }}
+              >
+                <View
+                  style={[
+                    styles.pin,
+                    isSelected && styles.pinSelected,
+                    isParked && styles.pinParked,
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name="motorbike"
+                    size={16}
+                    color={colors.textOnPrimary}
+                  />
+                </View>
+              </Marker>
+            );
+          })}
         </MapView>
-          // <Button title="Zoom to my location" onPress={this._zoomToUser} />
+
+        {userLocation ? (
+          <Pressable
+            style={styles.locateButton}
+            onPress={this.zoomToUser}
+            accessibilityRole="button"
+            accessibilityLabel="Center map on my location"
+          >
+            <MaterialCommunityIcons name="crosshairs-gps" size={22} color={colors.primary} />
+          </Pressable>
+        ) : null}
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    height: '45%',
+    width: '100%',
+    backgroundColor: colors.border, // neutral placeholder while tiles load
+  },
+  map: {
+    flex: 1,
+  },
+  locateButton: {
+    position: 'absolute',
+    right: 12,
+    bottom: 12,
+    width: MIN_TOUCH,
+    height: MIN_TOUCH,
+    borderRadius: MIN_TOUCH / 2,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...shadow.card,
+  },
+  pin: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: colors.surface,
+  },
+  pinSelected: {
+    backgroundColor: colors.accent,
+    transform: [{ scale: 1.15 }],
+  },
+  pinParked: {
+    backgroundColor: colors.success,
+    transform: [{ scale: 1.15 }],
+  },
+});
